@@ -201,3 +201,5 @@ if s.check() == sat:
     KEY = bytes([s.model()[k].as_long() for k in key])
     print(bytes(dec(flag, KEY)))
 ```
+`irisctf{ok_at_least_it_works}`
+`irisctf{if_you_didnt_use_a_smt_solver_thats_cool_too}`
