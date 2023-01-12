@@ -72,6 +72,7 @@ We see the challenge source is almost the same as in the **Easy NTRU** challenge
 The attack converts the polynomials used in NTRU into an equivalent matrix form, and then algebraically recovers the message. The first problem we run into is that the public key $h$ is not invettible, but we the peper describes how to get a pseudoinverse $h'$ such that $h'*h * r = r$, and that is sufficient for the attacks needs.
 
 Then we want to convert our public key $h$ and its pesudoinverse $h'$ into a matrix, we do this the following way:
+
 $$
 H = \begin{bmatrix}
 h_0 & h_{n-1} & \dots & h_1 \\
@@ -80,17 +81,23 @@ h_1 & h_0 & \dots & h_2 \\
 h_{n-1} & h_{n-2} & \dots & h_0
 \end{bmatrix}
 $$
+
 where 
+
 $$
 h = \sum_{i=0}^{n-1} h_ix^i
 $$
+
 is the public key. We get the pseudoinverse matrix $Ĥ$ the same way from $h'$. Other polynomials we write as vectors $f = (f_0, \dots, f_{n-1})$. All operations are done $\mod q$ unless stated otherwise.
 
 Now we can represent NTRU encryption as
+
 $$
 c = Hr + m.
 $$
+
 We then multiply this by $Ĥ$ and denote $b = Ĥc$.
+
 $$
 \begin{align}
 Ĥm + r & = b \nonumber \\
@@ -102,6 +109,7 @@ m^TĤ^TĤm - 2b^TĤm & = r^Tr - b^Tb \nonumber
 $$
 
 By lemma (2.2) described in the linked paper $Ĥ^TĤ$ is of the following form for some $a_i$.
+
 $$
 Ĥ^TĤ = \begin{bmatrix}
 a_0 & a_{n-1} & \dots & a_1 \\
@@ -110,10 +118,13 @@ a_1 & a_0 & \dots & a_2 \\
 a_{n-1} & a_{n-2} & \dots & a_0
 \end{bmatrix}
 $$
+
 By the construction of $r$, the value $d = r^Tr$ is known to us, as it is exactly the number of non zero coefficients in $r$. We denote $s = d - b^Tb$ and  $b^TĤ = (w_0,w_1, \dots, w_{n-1})$ to get the following equation:
+
 $$
 m^TĤ^TĤm - 2(w_0,w_1, \dots, w_{n-1})m = s
 $$
+
 $$
 \begin{align}
 & a_0(m_0^2 + m_1^2 + \dots + m_{n-1}^2) \nonumber \\
@@ -123,11 +134,15 @@ $$
 & - 2w_0m_0 - 2w_1m_1 - \dots - 2w_{n-1}m_{n-1} = s \nonumber \\
 \end{align}
 $$
+
 Let $x_i = m_im_0 + m_{i+1}m_1 + \dots + m_{n-1}m_{n-i-1} + m_0m{n-i} + \dots + m_{i-1}m_{n-1}$. Note that $n$ is an odd prime, so $a_i = a_{n-i}, x_i = x_{n-i}$. Knowing this we end up with the following equation:
+
 $$
 a_0x_0 + 2a_1x_1 + \dots + 2a_{\lceil \frac{n}{2} \rceil}x_{\lceil \frac{n}{2} \rceil} - 2w_0m_0 - \dots - 2w_{n-1}m_{n-1} = s
 $$
+
 Now since $r(1) = 0$ and $h(1)r(1) + m(1) = c(1)$ it follows that $m(1) = c(1)$.
+
 $$
 \begin{align}
 m_0 + \dots + m_{n-1} & = c(1) \nonumber \\
@@ -138,19 +153,25 @@ c(1)^2 - 2x_1 - \dots - 2x_{\lceil \frac{n}{2} \rceil} &= x_0 \nonumber
 $$
 
 By plugging this in the equation above we get
+
 $$
 2(a_1 - a_0)x_1 + \dots + 2(a_{\lceil \frac{n}{2} \rceil} - a_0)x_{\lceil \frac{n}{2} \rceil} - 2w_0m_0 - \dots - 2w_{n-1}m_{n-1} = s - a_0c(1)^2 \mod q
 $$
+
 Since it turns out $s - a_0c(1)^2$ is divisible by $2$, we can divide the entire equation by $2$ to get
+
 $$
 (a_1 - a_0)x_1 + \dots + (a_{\lceil \frac{n}{2} \rceil} - a_0)x_{\lceil \frac{n}{2} \rceil} - w_0m_0 - \dots - w_{n-1}m_{n-1} = \frac{s - a_0c(1)^2}{2} \mod \frac{q}{2}
 $$
+
 We have an equation with $\lceil \frac{n}{2} \rceil + n - 1$ unknowns, but we can get this equation from any ciphertext, so given enought ciphertext we can solve this as a system of linear equations.
 
 Let $L$ be a matrix with rows of the form $(a_1 - a_0, \dots a_{\lceil \frac{n}{2} \rceil} - a_0, -w_0, \dots -w_{n-1})$. Those are all known values we compute from different pairs of ciphertexts and keys. Similarly we compute a vector $S$ with elements of the form $\frac{s - a_0c(1)^2}{2}$. Let then our vector of unknowns be $Y = (x_1, \dots, x_{\lceil \frac{n}{2} \rceil}, m_0, \dots, m_{n-1})^T$. Then we can write our system of equations as
+
 $$
 L \times Y = S \mod \frac{q}{2}
 $$
+
 If we have enough equations, the matrix $L$ will be full rank, and the system will have an unique solution we can solve using gaussian elimination. We take the $(m_0, \dots, m_{n-1})$ part of $Y$ and decode that to get the flag:  `hitcon{ohno!y0u_broadc4st_t0o_much}`
 
 ### Implementation

@@ -72,15 +72,27 @@ We see that the challenge is just a regular implementation of NTRU. At first we 
 The next thing we noticed is that the script encrypts the flag with the same key 24 times. So the only difference between encryptions is the random polynomial $r$. We searched for key reuse attacks against NTRU and found the following paper: https://ntru.org/f/tr/tr006v1.pdf and it turns out this is exactly what we need. 
 
 The attacks abuses the fact than in a NTRU encryption
-$$e_i = r_i*h +m$$
+
+$$
+e_i = r_i*h +m
+$$
+
 for message $m$ and public key $h$. We then compute
-$$ c_i = (e_i-e_1)*h^{-1} = r_i - r_1.$$
+
+$$ 
+c_i = (e_i-e_1)*h^{-1} = r_i - r_1
+$$
+
 Since the coefficients of $r_i$ are elements of $\{-1,0,1\}$, we know that each coefficient of $c_i$ will be in $\{-2,-1,0,1,2\}$, and each non zero value gives us some information about $r_i$. With this we can recover most of $r_1$, we then repeat this for all $r_i$.
 
 We did not recover some information that we could have in this step, as $h$ is not invertible, because it shares a common factor $x-1$ with the polynomial modulo which we were working on. We found a workaround to this by computing the division in rationals and then casting the result back to our field. This worked most of the time, since $e_i - e_j$ had $x-1$ as a factor most of the time as well. In other cases we discarded that information. When solving the other NTRU challenge **everywhere**, we found out we could have used a pseudoinverse in this place instead.
 
 Then we reduce the options by comparing $(e_i - e_j)*h^{-1}$ to $r_i - r_j$ that we got. Since we know most of the coefficients of $r_i$ and $r_j$, we can now determine the potentially unknown coefficients of the other one. With this we know nearly all the coefficients of all $r_i$, and we can iterate over all possible options to try and decrypt the message the following way:
-$$m = e_i - r_i*h$$
+
+$$
+m = e_i - r_i*h
+$$
+
 This gets us the flag `hitcon{mu1tip13_encrypt1on_no_Encrpyti0n!}`
 
 ### Implementation
