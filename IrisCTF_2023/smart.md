@@ -87,7 +87,7 @@ $$
 and
 
 $$
-\text{SBOX}[i] = \text{partial\_dec}(\text{ct})
+\text{SBOX}[i] = \text{partial\\_dec}(\text{ct})
 $$
 
 Putting these constraints in z3 gives us the key.
