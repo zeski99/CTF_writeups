@@ -75,7 +75,7 @@ For the second part, we are not given the key, so we need to figure out a way to
 After a quick look at the source code, i noticed that the encryption is only using 2 rounds, which is way too little. Then everything apart from the step using `SBOX`, everything is linear, so we can use z3 on those parts. But since z3 doesn't work well with SBOXes, we first simplify the constraints it's going to need to solve by partially decrypting the ciphertext, stoping at the first swap bytes operation. From the other side we also partially encrypt until we get to that point, which is a single xor with the round key. This leaves us with the following:
 
 $$
-\text{SBOX}[\text{xor}(\text{pt}, \text{key})] = \text{partial\_dec}(\text{ct})
+\text{SBOX}[\text{xor}(\text{pt}, \text{key})] = \text{partial\\_dec}(\text{ct})
 $$
 
 Which allows us too look for such keys, where for all (plaintext, ciphertext) pairs, there exists a $0 \leq i < 256$ such that 
@@ -202,4 +202,5 @@ if s.check() == sat:
     print(bytes(dec(flag, KEY)))
 ```
 `irisctf{ok_at_least_it_works}`
+
 `irisctf{if_you_didnt_use_a_smt_solver_thats_cool_too}`
