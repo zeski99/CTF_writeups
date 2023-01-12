@@ -10,7 +10,7 @@ https://github.com/jvdsn/crypto-attacks/blob/master/attacks/lcg/truncated_state_
 Thanks [Jack](https://github.com/jack4818) for doing most of the work on this part.
 For this part we have some LCG looking thing over a random elliptic curve, and we need to find the prime this curve is over, only given some x coordinates. With some pen and paper magic we got some equations that let us do that and then compute p. In short: Taking linear combinations of points, we deduce a set of polynomial equations by working with the formula for point addition on elliptic curves. Given enough equations, we can remove all unknowns to be left with an integer which will be a multiple of p. We can recover the prime p by taking the gcd with the modulus n. You can find a more detailed explanation here: https://hackmd.io/@jack4818/SJjuNt4di
 
-```python=
+```py
 R.<A, B> = ZZ[]
 
 def ysqr(x):
@@ -69,7 +69,7 @@ print(gcd(kp1, N))
 #### Part 3
 We are given a kind of LCG, but instead done over matrices. Since we have a lot of outputs, and the matrices are not very big, we can solve this by just making A and B symbolic to get a system of equations and solve for A,B. Then we get a close formula to get $X_i = A^iX_0 + (A^i - I)/(A - I)*B$ and use that to compute the output we want.
 
-```python=
+```py
 n, m = 8, next_prime(2^16)
 
 def mt2dec(X):
@@ -141,7 +141,7 @@ p3 = next_prime(mt2dec(Y))
 ```
 
 Now all that is left is to decrypt the flag.
-```python=
+```py
 q = N // p1 // p2 // p3
 
 e = 0x10001

@@ -1,14 +1,14 @@
 ### Derek
 
 After a quick look at the code we see we are dealing with a feistel network with a lot of rounds. Next we notice the round function is using aes with a random key we don't know much about, so it is unlikely we break that part. What we can do however is make sure the following ends up in `t=0`:
-```python=
+```py
 t = aes(int(t.hex(), 16), self.keys[i]) & 0xffffffffffffffff
 t ^= aes(0xdeadbeefbaadf00d if i % 2 else 0xbaadf00ddeadbeef,
          self.keys[i]) & 0xffffffffffffffff
 ```
 This would mean we need to give it something that will equal the constant values we see here after the loop including some magic. Since we are too lazy to actually reverse what that loop does, we first tried if we can brute it, and it turns out a byte by byte brute force works. 
 
-```python=
+```py
 def magic(l):
     magic = c_uint64(0xffffffffffffffff)
     for m in bytes([int(bin(byte)[2::].zfill(8)[8::-1], 2)
@@ -54,7 +54,7 @@ for K in known:
 
 With this we have the inputs that will make the feistel network just swap l,r over and over, instead of actually encrypting them. After the last round they are then xor-ed with the key, and so by encrypting this known plaintext we can recover the key and decrypt the flag.
 
-```python=
+```py
 from Crypto.Util.number import *
 from ctypes import c_uint64
 from util import aes, nsplit
